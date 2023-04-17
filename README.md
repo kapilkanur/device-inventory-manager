@@ -1,1 +1,1 @@
-# spring-boot-app
+# Device Inventory Manager
