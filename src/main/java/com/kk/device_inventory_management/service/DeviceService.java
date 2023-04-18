@@ -1,13 +1,18 @@
 package com.kk.device_inventory_management.service;
 
+import com.kk.device_inventory_management.Exception.NoRecordsException;
+import com.kk.device_inventory_management.dtos.DeviceDTO;
 import com.kk.device_inventory_management.model.Device;
 import com.kk.device_inventory_management.repository.DeviceRepository;
-import jakarta.annotation.PostConstruct;
+import jakarta.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class DeviceService {
@@ -17,18 +22,25 @@ public class DeviceService {
     @Autowired
     DeviceRepository deviceRepository;
 
-    @PostConstruct
-    public void postConstruct() {
+    public boolean add(DeviceDTO deviceDTO) {
         Device device = new Device();
-        device.setId(1L);
-        device.setOs("Android");
-        device.setSerialNumber("3EBLAH");
-        log.info("Saving data into the database");
-        deviceRepository.save(device);
-        log.info("Retrieve all records from the db");
-        log.info("Devices: " + deviceRepository.findAll());
+        BeanUtils.copyProperties(deviceDTO, device);
+        try {
+            deviceRepository.save(device);
+        } catch (DataAccessException dataAccessException) {
+            log.error("Error while saving to the database : " + dataAccessException.getMessage());
+        }
+        return true;
     }
 
-
+    public DeviceDTO get(String serial) {
+        Optional<Device> device = deviceRepository.findBySerial(serial);
+        if (!device.isPresent()) {
+            throw new NoRecordsException("No result found for the device with the serial number : " + serial);
+        }
+        DeviceDTO deviceDTO = new DeviceDTO();
+        BeanUtils.copyProperties(device.get(), deviceDTO);
+        return deviceDTO;
+    }
 
 }
