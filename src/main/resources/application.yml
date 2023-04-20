@@ -1,0 +1,9 @@
+management:
+  server:
+    port: 2023
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "health"
+
