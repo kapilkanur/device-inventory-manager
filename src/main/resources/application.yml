@@ -1,9 +1,16 @@
 management:
   server:
     port: 2023
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     enabled-by-default: true
     web:
       exposure:
         include: "health"
+
+spring:
+  profiles:
+    active: dev
 
