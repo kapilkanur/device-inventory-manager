@@ -22,19 +22,11 @@ public class DeviceController {
 
     @PostMapping(name = "Add device", value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addDevice(@RequestBody @Valid DeviceDTO deviceDTO) {
-        try {
             return new ResponseEntity<>(deviceService.add(deviceDTO), HttpStatus.OK);
-        } catch (Exception e)  {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @GetMapping(name = "Get device by Serial Number", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDeviceBySerial(@RequestParam(name = "serial") String serial) {
-        try {
             return new ResponseEntity<>(deviceService.get(serial), HttpStatus.OK);
-        } catch (Exception e)  {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
